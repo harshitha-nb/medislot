@@ -27,3 +27,5 @@ Measured on a local laptop with 10,000 doctors, 50 concurrent connections for 15
 
 Indexes changed the doctors scan from a sequential scan to bitmap index scans.
 The cached run repeats one URL, so it shows the best case for caching.
+
+API docs (Swagger): run the app and open http://localhost:3000/docs
