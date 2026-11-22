@@ -21,3 +21,54 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {"email":"test@example.com","password":"wrongpassword"}
+
+### List doctors
+GET http://localhost:3000/api/doctors
+
+### Filter by specialty and city
+GET http://localhost:3000/api/doctors?specialty=Cardiology&city=Bengaluru
+
+### Pagination
+GET http://localhost:3000/api/doctors?page=2&limit=5
+
+### Free slots for doctor 1 (use tomorrow's date)
+GET http://localhost:3000/api/doctors/1/slots?date=2026-11-23
+
+### Bad date (should fail with 400)
+GET http://localhost:3000/api/doctors/1/slots?date=abc
+
+### Login (send this first)
+# @name login
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{"email":"test@example.com","password":"password123"}
+
+### Book slot 1
+@token = {{login.response.body.token}}
+POST http://localhost:3000/api/appointments
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{"slotId": 1}
+
+### Book slot 1 again (should fail with 409)
+POST http://localhost:3000/api/appointments
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{"slotId": 1}
+
+### My appointments
+GET http://localhost:3000/api/appointments/mine
+Authorization: Bearer {{token}}
+
+### Cancel appointment 1
+DELETE http://localhost:3000/api/appointments/1
+Authorization: Bearer {{token}}
+
+### Book without a token (should fail with 401)
+POST http://localhost:3000/api/appointments
+Content-Type: application/json
+
+{"slotId": 1}
