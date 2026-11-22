@@ -26,8 +26,8 @@ router.get('/', async (req, res) => {
        JOIN users u       ON u.id = d.user_id
        JOIN specialties s ON s.id = d.specialty_id
        JOIN clinics c     ON c.id = d.clinic_id
-       WHERE ($1::text IS NULL OR s.name ILIKE $1)
-         AND ($2::text IS NULL OR c.city ILIKE $2)
+      WHERE ($1::text IS NULL OR lower(s.name) = lower($1))
+        AND ($2::text IS NULL OR lower(c.city) = lower($2))
        ORDER BY d.experience_years DESC, d.id
        LIMIT $3 OFFSET $4`,
       [specialty, city, limit, (page - 1) * limit]

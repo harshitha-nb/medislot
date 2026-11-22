@@ -13,3 +13,17 @@ PASS: exactly one booking succeeded
 ```
 
 Only one booking succeeds. The database enforces this with a partial unique index on confirmed appointments.
+
+## Performance
+
+Measured on a local laptop with 10,000 doctors, 50 concurrent connections for 15 seconds
+(autocannon), searching doctors by specialty and city.
+
+| Scenario | Query time (EXPLAIN ANALYZE) | Req/sec | Avg latency | p99 latency |
+|---|---|---|---|---|
+| No indexes, no cache | 2.557 ms | 1,827 | 26.86 ms | 43 ms |
+| With indexes, no cache | 1.078 ms | 2,852 | 17.03 ms | 37 ms |
+| With indexes + Redis cache | n/a | 7,727 | 5.98 ms | 11 ms |
+
+Indexes changed the doctors scan from a sequential scan to bitmap index scans.
+The cached run repeats one URL, so it shows the best case for caching.

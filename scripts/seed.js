@@ -11,7 +11,7 @@ const CITIES = ['Bengaluru', 'Mumbai', 'Delhi', 'Chennai', 'Hyderabad', 'Pune', 
 async function main() {
   const doctorCount = parseInt(process.argv[2], 10) || 50;
   const clinicCount = Math.max(10, Math.ceil(doctorCount / 10));
-  const days = 5;        // days of slots, starting tomorrow
+  const days = parseInt(process.argv[3], 10) || 5;   // days of slots, starting tomorrow
   const perDay = 8;      // 30-minute slots per day, from 9:00
 
   const client = await db.connect();
