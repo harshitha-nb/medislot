@@ -1,11 +1,25 @@
 const express = require('express');
 const db = require('../config/db');
+const cache = require('../cache');
 const { requireAuth, requireRole } = require('../middleware/auth');
 
 const router = express.Router();
 
 // Every route here needs a logged-in patient
 router.use(requireAuth, requireRole('patient'));
+
+// Delete the cached free-slot list for the doctor/day this slot belongs to
+async function invalidateSlotCache(slotId) {
+  try {
+    const r = await db.query(
+      `SELECT doctor_id,
+              to_char(start_time AT TIME ZONE 'Asia/Kolkata', 'YYYY-MM-DD') AS day
+       FROM slots WHERE id = $1`, [slotId]);
+    if (r.rows[0]) await cache.del(`slots:${r.rows[0].doctor_id}:${r.rows[0].day}`);
+  } catch (err) {
+    console.error('Cache invalidation failed:', err.message);
+  }
+}
 
 // POST /api/appointments   body: { "slotId": 5 }
 router.post('/', async (req, res) => {
@@ -14,8 +28,6 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'slotId (a number) is required' });
   }
   try {
-    // One statement: book only if the slot exists and is in the future.
-    // The unique index guarantees only one confirmed booking per slot.
     const result = await db.query(
       `INSERT INTO appointments (slot_id, patient_id)
        SELECT id, $2::bigint FROM slots
@@ -26,9 +38,10 @@ router.post('/', async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Slot not found or already started' });
     }
+    await invalidateSlotCache(slotId);
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    if (err.code === '23505') {       // unique violation: someone else got it first
+    if (err.code === '23505') {
       return res.status(409).json({ error: 'Slot already booked' });
     }
     console.error(err);
@@ -36,7 +49,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET /api/appointments/mine   (the logged-in patient's appointments)
+// GET /api/appointments/mine
 router.get('/mine', async (req, res) => {
   try {
     const result = await db.query(
@@ -61,7 +74,7 @@ router.get('/mine', async (req, res) => {
   }
 });
 
-// DELETE /api/appointments/7   (cancel your own confirmed appointment)
+// DELETE /api/appointments/7
 router.delete('/:id', async (req, res) => {
   const id = parseInt(req.params.id, 10);
   if (!Number.isInteger(id)) {
@@ -78,6 +91,7 @@ router.delete('/:id', async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'No confirmed appointment found' });
     }
+    await invalidateSlotCache(result.rows[0].slot_id);
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err);

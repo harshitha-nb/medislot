@@ -50,7 +50,7 @@ POST http://localhost:3000/api/appointments
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-{"slotId": 1}
+{"slotId": 2}
 
 ### Book slot 1 again (should fail with 409)
 POST http://localhost:3000/api/appointments

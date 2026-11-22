@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('../config/db');
+const cache = require('../cache');
 
 const router = express.Router();
 
@@ -9,6 +10,13 @@ router.get('/', async (req, res) => {
   const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 10, 1), 50);
   const specialty = req.query.specialty || null;
   const city = req.query.city || null;
+
+  const key = `doctors:${(specialty || '*').toLowerCase()}:${(city || '*').toLowerCase()}:${page}:${limit}`;
+  const cached = await cache.getJSON(key);
+  if (cached) {
+    res.set('X-Cache', 'HIT');
+    return res.json(cached);
+  }
 
   try {
     const result = await db.query(
@@ -24,20 +32,31 @@ router.get('/', async (req, res) => {
        LIMIT $3 OFFSET $4`,
       [specialty, city, limit, (page - 1) * limit]
     );
-    res.json({ page, limit, count: result.rows.length, doctors: result.rows });
+    const payload = { page, limit, count: result.rows.length, doctors: result.rows };
+    await cache.setJSON(key, payload, 60);          // keep for 60 seconds
+    res.set('X-Cache', 'MISS');
+    res.json(payload);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-// GET /api/doctors/1/slots?date=2026-11-23  (free slots only)
+// GET /api/doctors/1/slots?date=2026-11-24  (free slots only)
 router.get('/:id/slots', async (req, res) => {
   const doctorId = parseInt(req.params.id, 10);
   const date = req.query.date;
   if (!Number.isInteger(doctorId) || !/^\d{4}-\d{2}-\d{2}$/.test(date || '')) {
     return res.status(400).json({ error: 'Valid doctor id and date (YYYY-MM-DD) are required' });
   }
+
+  const key = `slots:${doctorId}:${date}`;
+  const cached = await cache.getJSON(key);
+  if (cached) {
+    res.set('X-Cache', 'HIT');
+    return res.json(cached);
+  }
+
   try {
     const result = await db.query(
       `SELECT s.id, s.start_time, s.end_time
@@ -51,7 +70,10 @@ router.get('/:id/slots', async (req, res) => {
        ORDER BY s.start_time`,
       [doctorId, date]
     );
-    res.json({ doctorId, date, slots: result.rows });
+    const payload = { doctorId, date, slots: result.rows };
+    await cache.setJSON(key, payload, 30);          // keep for 30 seconds
+    res.set('X-Cache', 'MISS');
+    res.json(payload);
   } catch (err) {
     if (err.code === '22008' || err.code === '22007') {
       return res.status(400).json({ error: 'Invalid date' });
