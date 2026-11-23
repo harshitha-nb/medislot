@@ -29,3 +29,16 @@ Indexes changed the doctors scan from a sequential scan to bitmap index scans.
 The cached run repeats one URL, so it shows the best case for caching.
 
 API docs (Swagger): run the app and open http://localhost:3000/docs
+
+## Run it
+
+Requires Docker Desktop.
+
+    docker compose up -d --build
+    docker compose exec app node scripts/seed.js 50
+
+API: http://localhost:3000  
+Docs (Swagger): http://localhost:3000/docs
+
+Seed data: patients register themselves; doctors are doctor1@medislot.com ... (password Password123).
+Stop with `docker compose stop`; reset everything with `docker compose down -v`.
