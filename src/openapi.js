@@ -7,7 +7,7 @@ module.exports = {
       'Healthcare appointment booking backend. Register, log in, search doctors, ' +
       'see free slots and book or cancel appointments. Double booking is prevented by the database.'
   },
-  servers: [{ url: 'http://localhost:3000' }],
+  servers: [{ url: '/' }],
   tags: [
     { name: 'Auth' }, { name: 'Doctors' }, { name: 'Appointments' }
   ],
