@@ -83,4 +83,36 @@ router.get('/:id/slots', async (req, res) => {
   }
 });
 
+// GET /api/doctors/1  (one doctor's details)
+router.get('/:id', async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({ error: 'Valid doctor id is required' });
+  }
+  const key = `doctor:${id}`;
+  const cached = await cache.getJSON(key);
+  if (cached) {
+    res.set('X-Cache', 'HIT');
+    return res.json(cached);
+  }
+  try {
+    const result = await db.query(
+      `SELECT d.id, u.name, s.name AS specialty, c.name AS clinic, c.city, c.address,
+              d.experience_years, d.consultation_fee
+       FROM doctors d
+       JOIN users u       ON u.id = d.user_id
+       JOIN specialties s ON s.id = d.specialty_id
+       JOIN clinics c     ON c.id = d.clinic_id
+       WHERE d.id = $1`,
+      [id]
+    );
+    if (!result.rows[0]) return res.status(404).json({ error: 'Doctor not found' });
+    await cache.setJSON(key, result.rows[0], 300);
+    res.set('X-Cache', 'MISS');
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 module.exports = router;

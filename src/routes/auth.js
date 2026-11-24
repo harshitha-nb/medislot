@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../config/db');
+const { requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -49,4 +50,16 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// GET /api/auth/me  (the logged-in user)
+router.get('/me', requireAuth, async (req, res) => {
+  try {
+    const result = await db.query(
+      'SELECT id, name, email, role FROM users WHERE id = $1', [req.user.id]);
+    if (!result.rows[0]) return res.status(404).json({ error: 'User not found' });
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 module.exports = router;

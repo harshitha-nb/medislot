@@ -72,3 +72,16 @@ POST http://localhost:3000/api/appointments
 Content-Type: application/json
 
 {"slotId": 1}
+
+### Filter lists
+GET http://localhost:3000/api/meta
+
+### One doctor
+GET http://localhost:3000/api/doctors/1
+
+### Doctor not found (should be 404)
+GET http://localhost:3000/api/doctors/99999
+
+### Who am I (send Login first)
+GET http://localhost:3000/api/auth/me
+Authorization: Bearer {{token}}
