@@ -7,8 +7,7 @@ client.on('error', (err) => {
   if (!warned) { console.error('Redis error (app keeps working without cache):', err.message); warned = true; }
 });
 client.on('ready', () => { warned = false; console.log('Redis connected'); });
-client.connect().catch(() => {});
-
+if (process.env.CACHE_DISABLED !== '1') client.connect().catch(() => {});
 async function getJSON(key) {
   if (!client.isReady) return null;
   try {
