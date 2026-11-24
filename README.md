@@ -1,4 +1,5 @@
 # MediSlot
+![CI](https://github.com/harshitha-nb/medislot/actions/workflows/ci.yml/badge.svg)
 
 A healthcare appointment booking backend. Patients search doctors by specialty and city, see free time slots, and book or cancel appointments. The database guarantees that a slot can never be double-booked, even when many people try at the same moment.
 
