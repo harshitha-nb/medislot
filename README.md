@@ -2,8 +2,8 @@
 
 A healthcare appointment booking backend. Patients search doctors by specialty and city, see free time slots, and book or cancel appointments. The database guarantees that a slot can never be double-booked, even when many people try at the same moment.
 
-**Live demo:** https://YOUR-LINK  
-**API docs (Swagger):** https://YOUR-LINK/docs  
+**Live demo:** https://medislot-hk2k.onrender.com
+**API docs (Swagger):** https://medislot-hk2k.onrender.com/docs  
 Free hosting sleeps after inactivity, so the first request can take up to a minute.
 
 ## Features
