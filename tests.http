@@ -85,3 +85,63 @@ GET http://localhost:3000/api/doctors/99999
 ### Who am I (send Login first)
 GET http://localhost:3000/api/auth/me
 Authorization: Bearer {{token}}
+
+### Doctor login
+# @name doctorLogin
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{"email":"doctor1@medislot.com","password":"Password123"}
+
+### Doctor creates slots (expect 201, created: 4)
+@doctorToken = {{doctorLogin.response.body.token}}
+POST http://localhost:3000/api/portal/slots
+Content-Type: application/json
+Authorization: Bearer {{doctorToken}}
+
+{"date":"2026-11-30","startTime":"14:00","endTime":"16:00","durationMinutes":30}
+
+### Same request again (expect created: 0)
+POST http://localhost:3000/api/portal/slots
+Content-Type: application/json
+Authorization: Bearer {{doctorToken}}
+
+{"date":"2026-11-30","startTime":"14:00","endTime":"16:00","durationMinutes":30}
+
+### Doctor's slots that day
+GET http://localhost:3000/api/portal/slots?date=2026-11-30
+Authorization: Bearer {{doctorToken}}
+
+### Doctor's appointments
+GET http://localhost:3000/api/portal/appointments
+Authorization: Bearer {{doctorToken}}
+
+### Admin login
+# @name adminLogin
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{"email":"admin@medislot.com","password":"Admin1234"}
+
+### Admin stats
+@adminToken = {{adminLogin.response.body.token}}
+GET http://localhost:3000/api/admin/stats
+Authorization: Bearer {{adminToken}}
+
+### Admin lookups
+GET http://localhost:3000/api/admin/lookups
+Authorization: Bearer {{adminToken}}
+
+### Admin adds a clinic
+POST http://localhost:3000/api/admin/clinics
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{"name":"Lakeside Clinic","city":"Bengaluru","address":"12 Lake Road"}
+
+### Admin adds a doctor
+POST http://localhost:3000/api/admin/doctors
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{"name":"Dr. Asha Rao","email":"asha@medislot.com","password":"Password123","specialtyId":1,"clinicId":1,"experienceYears":8,"consultationFee":600}
