@@ -10,7 +10,8 @@
   },
   "jest": {
   "testEnvironment": "node",
-  "testTimeout": 30000
+  "testTimeout": 30000,
+  "testPathIgnorePatterns": ["/node_modules/", "/frontend/"]
   },
   "keywords": [],
   "author": "",
