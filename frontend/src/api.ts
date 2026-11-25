@@ -15,6 +15,23 @@ export type Role = 'patient' | 'doctor' | 'admin'
 export type User = { id: string; name: string; email: string; role: Role }
 
 export type Meta = { specialties: string[]; cities: string[] }
+export type Doctor = {
+  id: string
+  name: string
+  specialty: string
+  clinic: string
+  city: string
+  experience_years: number
+  consultation_fee: string // money arrives from the database as text, e.g. "500.00"
+}
+
+export type DoctorList = {
+  page: number
+  limit: number
+  count: number
+  hasMore: boolean
+  doctors: Doctor[]
+}
 
 export class ApiError extends Error {
   status: number
@@ -24,7 +41,7 @@ export class ApiError extends Error {
   }
 }
 
-type Options = { method?: string; body?: unknown }
+type Options = { method?: string; body?: unknown; signal?: AbortSignal }
 
 export async function api<T>(path: string, options: Options = {}): Promise<T> {
   const headers: Record<string, string> = {}
@@ -32,10 +49,11 @@ export async function api<T>(path: string, options: Options = {}): Promise<T> {
   if (token) headers.Authorization = `Bearer ${token}`
   if (options.body !== undefined) headers['Content-Type'] = 'application/json'
 
-  const res = await fetch(`/api${path}`, {
+    const res = await fetch(`/api${path}`, {
     method: options.method ?? 'GET',
     headers,
     body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+    signal: options.signal,
   })
 
   const data: unknown = await res.json().catch(() => ({}))

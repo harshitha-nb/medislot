@@ -30,9 +30,16 @@ router.get('/', async (req, res) => {
         AND ($2::text IS NULL OR lower(c.city) = lower($2))
        ORDER BY d.experience_years DESC, d.id
        LIMIT $3 OFFSET $4`,
-      [specialty, city, limit, (page - 1) * limit]
+      [specialty, city, limit + 1, (page - 1) * limit]
     );
-    const payload = { page, limit, count: result.rows.length, doctors: result.rows };
+    const rows = result.rows.slice(0, limit);
+    const payload = {
+      page,
+      limit,
+      count: rows.length,
+      hasMore: result.rows.length > limit,
+      doctors: rows,
+    };
     await cache.setJSON(key, payload, 60);          // keep for 60 seconds
     res.set('X-Cache', 'MISS');
     res.json(payload);
