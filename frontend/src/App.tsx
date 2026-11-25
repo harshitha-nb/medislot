@@ -1,35 +1,39 @@
-import { useEffect, useState } from 'react'
-
-type Meta = { specialties: string[]; cities: string[] }
+import { Route, Routes } from 'react-router-dom'
+import Navbar from './components/Navbar'
+import ProtectedRoute from './components/ProtectedRoute'
+import ComingSoon from './pages/ComingSoon'
+import Home from './pages/Home'
+import Login from './pages/Login'
+import NotFound from './pages/NotFound'
+import Register from './pages/Register'
 
 export default function App() {
-  const [meta, setMeta] = useState<Meta | null>(null)
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    fetch('/api/meta')
-      .then((res) => {
-        if (!res.ok) throw new Error(`Server returned ${res.status}`)
-        return res.json() as Promise<Meta>
-      })
-      .then(setMeta)
-      .catch((err: Error) => setError(err.message))
-  }, [])
-
   return (
-    <main className="mx-auto max-w-3xl p-8">
-      <h1 className="text-3xl font-bold text-teal-700">MediSlot</h1>
-      <p className="mt-2 text-slate-600">Frontend connected to the API.</p>
-      {error && <p className="mt-4 text-red-600">Could not reach the API: {error}</p>}
-      {meta && (
-        <ul className="mt-4 flex flex-wrap gap-2">
-          {meta.specialties.map((s) => (
-            <li key={s} className="rounded-full bg-teal-50 px-3 py-1 text-sm text-teal-800">
-              {s}
-            </li>
-          ))}
-        </ul>
-      )}
-    </main>
+    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
+      <Navbar />
+      <div className="flex-1">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/doctors" element={<ComingSoon title="Find doctors" />} />
+
+          <Route element={<ProtectedRoute roles={['patient']} />}>
+            <Route path="/appointments" element={<ComingSoon title="My appointments" />} />
+          </Route>
+          <Route element={<ProtectedRoute roles={['doctor']} />}>
+            <Route path="/dashboard" element={<ComingSoon title="Doctor dashboard" />} />
+          </Route>
+          <Route element={<ProtectedRoute roles={['admin']} />}>
+            <Route path="/admin" element={<ComingSoon title="Admin panel" />} />
+          </Route>
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+      <footer className="border-t border-slate-200 bg-white px-4 py-4 text-center text-sm text-slate-500">
+        MediSlot is a demo project. Please do not enter real personal or medical information.
+      </footer>
+    </div>
   )
 }
