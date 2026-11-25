@@ -32,6 +32,19 @@ export type DoctorList = {
   hasMore: boolean
   doctors: Doctor[]
 }
+export type DoctorDetail = Doctor & { address: string }
+
+export type Slot = { id: string; start_time: string; end_time: string }
+
+export type SlotList = { doctorId: number; date: string; slots: Slot[] }
+
+export type Booking = {
+  id: string
+  slot_id: string
+  patient_id: string
+  status: string
+  created_at: string
+}
 
 export class ApiError extends Error {
   status: number

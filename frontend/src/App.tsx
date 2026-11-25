@@ -7,6 +7,7 @@ import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import Register from './pages/Register'
 import Doctors from './pages/Doctors'
+import DoctorDetail from './pages/DoctorDetail'
 
 export default function App() {
   return (
@@ -18,7 +19,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
                     <Route path="/doctors" element={<Doctors />} />
-          <Route path="/doctors/:id" element={<ComingSoon title="Doctor details" />} />
+                    <Route path="/doctors/:id" element={<DoctorDetail />} />
           <Route element={<ProtectedRoute roles={['patient']} />}>
             <Route path="/appointments" element={<ComingSoon title="My appointments" />} />
           </Route>

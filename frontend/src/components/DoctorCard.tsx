@@ -1,19 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { Doctor } from '../api'
-
-const rupees = new Intl.NumberFormat('en-IN', {
-  style: 'currency',
-  currency: 'INR',
-  maximumFractionDigits: 0,
-})
-
-function initials(name: string): string {
-  const parts = name.replace(/^Dr\.?\s+/i, '').split(' ').filter(Boolean)
-  return parts
-    .slice(0, 2)
-    .map((p) => p[0].toUpperCase())
-    .join('')
-}
+import { initials, rupees } from '../lib/format'
 
 export default function DoctorCard({ doctor }: { doctor: Doctor }) {
   return (
