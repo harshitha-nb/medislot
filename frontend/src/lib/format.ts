@@ -37,3 +37,7 @@ export function formatTime(iso: string): string {
     minute: '2-digit',
   })
 }
+// Converts a timestamp from the API into a YYYY-MM-DD string in Indian time
+export function dateOf(iso: string): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: IST }).format(new Date(iso))
+}

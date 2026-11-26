@@ -46,6 +46,18 @@ export type Booking = {
   created_at: string
 }
 
+export type MyAppointment = {
+  id: string
+  status: 'confirmed' | 'cancelled'
+  created_at: string
+  start_time: string
+  end_time: string
+  doctor: string
+  specialty: string
+  clinic: string
+  city: string
+}
+
 export class ApiError extends Error {
   status: number
   constructor(status: number, message: string) {
