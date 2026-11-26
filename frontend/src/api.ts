@@ -58,6 +58,22 @@ export type MyAppointment = {
   city: string
 }
 
+export type PortalSlot = {
+  id: string
+  start_time: string
+  end_time: string
+  booked: boolean
+}
+
+export type PortalAppointment = {
+  id: string
+  status: 'confirmed' | 'cancelled'
+  created_at: string
+  start_time: string
+  end_time: string
+  patient: string
+}
+
 export class ApiError extends Error {
   status: number
   constructor(status: number, message: string) {

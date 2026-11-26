@@ -9,6 +9,7 @@ import Register from './pages/Register'
 import Doctors from './pages/Doctors'
 import DoctorDetail from './pages/DoctorDetail'
 import MyAppointments from './pages/MyAppointments'
+import Dashboard from './pages/Dashboard'
 
 export default function App() {
   return (
@@ -25,7 +26,7 @@ export default function App() {
                         <Route path="/appointments" element={<MyAppointments />} />
           </Route>
           <Route element={<ProtectedRoute roles={['doctor']} />}>
-            <Route path="/dashboard" element={<ComingSoon title="Doctor dashboard" />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           </Route>
           <Route element={<ProtectedRoute roles={['admin']} />}>
             <Route path="/admin" element={<ComingSoon title="Admin panel" />} />
