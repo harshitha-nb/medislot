@@ -5,9 +5,10 @@ type Props = {
   type?: string
   autoComplete?: string
   minLength?: number
+  min?: number
 }
 
-export default function Field({ label, value, onChange, type = 'text', autoComplete, minLength }: Props) {
+export default function Field({ label, value, onChange, type = 'text', autoComplete, minLength, min }: Props) {
   return (
     <label className="block">
       <span className="text-sm font-medium text-slate-700">{label}</span>
@@ -18,6 +19,7 @@ export default function Field({ label, value, onChange, type = 'text', autoCompl
         onChange={(e) => onChange(e.target.value)}
         autoComplete={autoComplete}
         minLength={minLength}
+        min={min}
         required
       />
     </label>

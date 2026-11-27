@@ -74,6 +74,19 @@ export type PortalAppointment = {
   patient: string
 }
 
+export type AdminStats = {
+  doctors: number
+  patients: number
+  clinics: number
+  confirmed_appointments: number
+  cancelled_appointments: number
+}
+
+export type Lookups = {
+  specialties: { id: number; name: string }[]
+  clinics: { id: string; name: string; city: string }[]
+}
+
 export class ApiError extends Error {
   status: number
   constructor(status: number, message: string) {

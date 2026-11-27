@@ -1,7 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
-import ComingSoon from './pages/ComingSoon'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
@@ -10,6 +9,7 @@ import Doctors from './pages/Doctors'
 import DoctorDetail from './pages/DoctorDetail'
 import MyAppointments from './pages/MyAppointments'
 import Dashboard from './pages/Dashboard'
+import Admin from './pages/Admin'
 
 export default function App() {
   return (
@@ -29,7 +29,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           </Route>
           <Route element={<ProtectedRoute roles={['admin']} />}>
-            <Route path="/admin" element={<ComingSoon title="Admin panel" />} />
+              <Route path="/admin" element={<Admin />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />
