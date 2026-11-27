@@ -1,8 +1,9 @@
+import { HeartPulse } from 'lucide-react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
-  `rounded-md px-3 py-2 text-sm font-medium ${
+  `rounded-md px-3 py-2 text-sm font-medium transition-colors ${
     isActive ? 'bg-teal-50 text-teal-800' : 'text-slate-600 hover:text-slate-900'
   }`
 
@@ -16,10 +17,11 @@ export default function Navbar() {
   }
 
   return (
-    <header className="border-b border-slate-200 bg-white">
+    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur">
       <nav className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 px-4 py-3">
         <div className="flex flex-wrap items-center gap-1">
-          <Link to="/" className="mr-4 text-xl font-bold text-teal-700">
+          <Link to="/" className="mr-4 flex items-center gap-2 text-xl font-bold text-teal-700">
+            <HeartPulse className="h-6 w-6" aria-hidden="true" />
             MediSlot
           </Link>
           <NavLink to="/doctors" className={linkClass}>Find doctors</NavLink>
