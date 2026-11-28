@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { CalendarCheck, MapPin, Search, ShieldCheck, Stethoscope } from 'lucide-react'
 import { api } from '../api'
 import type { Meta } from '../api'
+import SpecialtyIcon from '../components/SpecialtyIcon'
+import { specialtyStyle } from '../lib/specialties'
 
 // Optional: put a photo at frontend/public/hero.jpg and set this to '/hero.jpg'
 const HERO_IMAGE = ''
@@ -118,18 +120,22 @@ export default function Home() {
         </div>
       </section>
 
-      {meta && meta.specialties.length > 0 && (
+            {meta && meta.specialties.length > 0 && (
         <section className="mx-auto max-w-5xl px-4 pb-14">
           <h2 className="text-2xl font-bold text-slate-900">Browse by specialty</h2>
-          <ul className="mt-5 flex flex-wrap gap-2">
+          <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {meta.specialties.map((s) => (
               <li key={s}>
                 <Link
                   to={`/doctors?specialty=${encodeURIComponent(s)}`}
-                  className="flex items-center gap-2 rounded-full border border-teal-100 bg-white px-4 py-2 text-sm font-medium text-teal-800 shadow-sm transition hover:border-teal-600 hover:bg-teal-50"
+                  className="flex h-full flex-col items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-teal-600 hover:shadow-md"
                 >
-                  <Stethoscope className="h-4 w-4" aria-hidden="true" />
-                  {s}
+                  <span
+                    className={`flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-br ${specialtyStyle(s).gradient} text-white`}
+                  >
+                    <SpecialtyIcon name={s} className="h-7 w-7" />
+                  </span>
+                  <span className="text-sm font-medium text-slate-800">{s}</span>
                 </Link>
               </li>
             ))}

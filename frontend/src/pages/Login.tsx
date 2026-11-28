@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import AuthLayout from '../components/AuthLayout'
 import Field from '../components/Field'
 
 export default function Login() {
@@ -30,9 +31,8 @@ export default function Login() {
   }
 
   return (
-    <main className="mx-auto max-w-md px-4 py-12">
-      <h1 className="text-2xl font-bold text-slate-900">Log in</h1>
-      <form onSubmit={onSubmit} className="mt-6 space-y-4 rounded-lg bg-white p-6 shadow-sm">
+    <AuthLayout title="Welcome back" subtitle="Log in to book and manage your appointments.">
+      <form onSubmit={onSubmit} className="mt-6 space-y-4">
         <Field label="Email" type="email" value={email} onChange={setEmail} autoComplete="email" />
         <Field
           label="Password"
@@ -56,6 +56,6 @@ export default function Login() {
           Create an account
         </Link>
       </p>
-    </main>
+    </AuthLayout>
   )
 }

@@ -4,6 +4,8 @@ import { api, ApiError } from '../api'
 import type { Booking, DoctorDetail as DoctorInfo, Slot, SlotList } from '../api'
 import { useAuth } from '../auth/AuthContext'
 import { formatDay, formatTime, initials, istDate, rupees } from '../lib/format'
+import SpecialtyIcon from '../components/SpecialtyIcon'
+import { specialtyStyle } from '../lib/specialties'
 
 type DoctorResult = { id: string; doctor?: DoctorInfo; error?: string }
 type SlotResult = { key: string; slots?: Slot[]; error?: string }
@@ -115,37 +117,38 @@ export default function DoctorDetail() {
         ← All doctors
       </Link>
 
-      <section className="mt-4 rounded-lg bg-white p-6 shadow-sm">
-        <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-teal-100 text-xl font-semibold text-teal-800">
+            <section className="mt-4 overflow-hidden rounded-xl bg-white shadow-sm">
+        <div className={`relative h-28 bg-linear-to-br ${specialtyStyle(doctor.specialty).gradient}`}>
+          <div aria-hidden="true" className="pattern-plus absolute inset-0" />
+          <SpecialtyIcon name={doctor.specialty} className="absolute right-5 top-5 h-16 w-16 text-white/80" />
+        </div>
+        <div className="px-6 pb-6">
+          <div className="relative -mt-10 flex h-20 w-20 items-center justify-center rounded-full border-4 border-white bg-teal-100 text-2xl font-semibold text-teal-800">
             {initials(doctor.name)}
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">{doctor.name}</h1>
-            <p className="text-teal-700">{doctor.specialty}</p>
-          </div>
+          <h1 className="mt-3 text-2xl font-bold text-slate-900">{doctor.name}</h1>
+          <p className="font-medium text-teal-700">{doctor.specialty}</p>
+          <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
+            <div>
+              <dt className="text-slate-500">Clinic</dt>
+              <dd className="font-medium text-slate-900">{doctor.clinic}</dd>
+              <dd className="text-slate-600">
+                {doctor.address}, {doctor.city}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-slate-500">Experience</dt>
+              <dd className="font-medium text-slate-900">{doctor.experience_years} years</dd>
+            </div>
+            <div>
+              <dt className="text-slate-500">Consultation fee</dt>
+              <dd className="font-medium text-slate-900">
+                {rupees.format(Number(doctor.consultation_fee))}
+              </dd>
+            </div>
+          </dl>
         </div>
-        <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
-          <div>
-            <dt className="text-slate-500">Clinic</dt>
-            <dd className="font-medium text-slate-900">{doctor.clinic}</dd>
-            <dd className="text-slate-600">
-              {doctor.address}, {doctor.city}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-slate-500">Experience</dt>
-            <dd className="font-medium text-slate-900">{doctor.experience_years} years</dd>
-          </div>
-          <div>
-            <dt className="text-slate-500">Consultation fee</dt>
-            <dd className="font-medium text-slate-900">
-              {rupees.format(Number(doctor.consultation_fee))}
-            </dd>
-          </div>
-        </dl>
       </section>
-
       <section className="mt-6 rounded-lg bg-white p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-slate-900">Book an appointment</h2>
 

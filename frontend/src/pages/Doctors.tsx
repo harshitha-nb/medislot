@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router-dom'
 import { api } from '../api'
 import type { DoctorList, Meta } from '../api'
 import DoctorCard from '../components/DoctorCard'
+import SpecialtyIcon from '../components/SpecialtyIcon'
+import { specialtyStyle } from '../lib/specialties'
 
 const PAGE_SIZE = 9
 
@@ -54,12 +56,20 @@ export default function Doctors() {
   }
 
   const hasFilters = specialty !== '' || city !== ''
+  const banner = specialtyStyle(specialty)
   const data = loading ? undefined : result?.data
   const error = loading ? undefined : result?.error
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8">
-      <h1 className="text-2xl font-bold text-slate-900">Find a doctor</h1>
+            <div className={`relative overflow-hidden rounded-xl bg-linear-to-br p-6 text-white shadow-sm ${banner.gradient}`}>
+        <div aria-hidden="true" className="pattern-plus absolute inset-0" />
+        <SpecialtyIcon name={specialty} className="absolute right-6 top-1/2 h-20 w-20 -translate-y-1/2 text-white/30" />
+        <h1 className="relative text-2xl font-bold">{specialty ? `${specialty} doctors` : 'Find a doctor'}</h1>
+        <p className="relative mt-1 text-white/90">
+          {city ? `Showing doctors in ${city}` : 'Search by specialty and city'}
+        </p>
+      </div>
 
       <div className="mt-4 grid gap-4 rounded-lg bg-white p-4 shadow-sm sm:grid-cols-3">
         <label className="block">

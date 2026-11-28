@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import AuthLayout from '../components/AuthLayout'
 import Field from '../components/Field'
 
 export default function Register() {
@@ -29,12 +30,11 @@ export default function Register() {
   }
 
   return (
-    <main className="mx-auto max-w-md px-4 py-12">
-      <h1 className="text-2xl font-bold text-slate-900">Create your account</h1>
-      <p className="mt-1 text-sm text-slate-500">
-        This is a demo. Please use a made-up name and email.
-      </p>
-      <form onSubmit={onSubmit} className="mt-6 space-y-4 rounded-lg bg-white p-6 shadow-sm">
+    <AuthLayout
+      title="Create your account"
+      subtitle="This is a demo. Please use a made-up name and email."
+    >
+      <form onSubmit={onSubmit} className="mt-6 space-y-4">
         <Field label="Name" value={name} onChange={setName} autoComplete="name" />
         <Field label="Email" type="email" value={email} onChange={setEmail} autoComplete="email" />
         <Field
@@ -60,6 +60,6 @@ export default function Register() {
           Log in
         </Link>
       </p>
-    </main>
+    </AuthLayout>
   )
 }
